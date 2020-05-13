@@ -1,0 +1,5 @@
+#!/bin/bash
+
+systemctl enable httpd
+echo 'Sometext' > /var/www/html/index.html
+useradd someuser

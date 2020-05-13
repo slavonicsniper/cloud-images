@@ -1,0 +1,111 @@
+export DIB_BLOCK_DEVICE_CONFIG='''
+- local_loop:
+    name: image0
+    directory: /var/tmp
+- partitioning:
+    base: image0
+    label: mbr
+    partitions:
+      - name: boot
+        flags: [ boot,primary ]
+        size: 500MiB
+      - name: efi
+        flags: [ primary ]
+        size: 500MiB
+      - name: root
+        flags: [ primary ]
+        size: 100%
+- lvm:
+    name: lvm
+    base: [ root ]
+    pvs:
+        - name: pv
+          base: root
+          options: [ "--force" ]
+    vgs:
+        - name: vg
+          base: [ "pv" ]
+          options: [ "--force" ]
+    lvs:
+        - name: lv_root
+          base: vg
+          size: 5G
+        - name: lv_usr
+          base: vg
+          size: 5G
+        - name: lv_opt
+          base: vg
+          size: 15G
+        - name: lv_var
+          base: vg
+          size: 10G
+        - name: lv_tmp
+          base: vg
+          size: 10G
+        - name: lv_home
+          base: vg
+          size: 5G
+- mkfs:
+    name: fs_boot
+    base: boot
+    type: ext4
+    mount:
+      mount_point: /boot
+      fstab:
+        options: defaults
+- mkfs:
+    name: fs_root
+    base: lv_root
+    type: xfs
+    label: "img-rootfs"
+    mount:
+        mount_point: /
+        fstab:
+            options: "rw,relatime"
+            fsck-passno: 1
+- mkfs:
+    name: fs_usr
+    base: lv_usr
+    type: xfs
+    mount:
+        mount_point: /usr
+        fstab:
+            options: "rw,relatime"
+            fsck-passno: 2
+- mkfs:
+    name: fs_opt
+    base: lv_opt
+    type: xfs
+    mount:
+        mount_point: /opt
+        fstab:
+            options: "rw,relatime"
+            fsck-passno: 2
+- mkfs:
+    name: fs_var
+    base: lv_var
+    type: xfs
+    mount:
+        mount_point: /var
+        fstab:
+            options: "rw,relatime"
+            fsck-passno: 2
+- mkfs:
+    name: fs_tmp
+    base: lv_tmp
+    type: xfs
+    mount:
+        mount_point: /tmp
+        fstab:
+            options: "rw,nosuid,nodev,noexec,relatime"
+            fsck-passno: 2
+- mkfs:
+    name: fs_home
+    base: lv_home
+    type: xfs
+    mount:
+        mount_point: /home
+        fstab:
+            options: "rw,relatime"
+            fsck-passno: 2
+'''

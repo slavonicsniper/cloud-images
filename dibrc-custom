@@ -1,0 +1,14 @@
+# Required by diskimage-builder to discover element collections
+export ELEMENTS_PATH=elements/custom:/usr/share/diskimage-builder/elements
+export DIB_LOCAL_IMAGE=~/images/centos7-standard.qcow2
+#export DIB_LOCAL_IMAGE=~/images/CentOS-7-x86_64-GenericCloud.qcow2
+
+# The base operating system element(s) provided by the diskimage-builder
+# elements collection. Other values which may work include:
+# centos7, debian, opensuse, rhel, rhel7, or ubuntu
+export BASE_ELEMENTS="vm centos7 script"
+
+#export PACKAGES="httpd"
+export TYPE=qcow2
+export ARCH=amd64
+export IMAGE_NAME=centos7-custom
